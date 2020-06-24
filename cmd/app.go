@@ -4,12 +4,25 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"platform/cmd/web"
 	"syscall"
+
+	"github.com/yeremiaaryo/go-pkg/database"
+	"github.com/yeremiaaryo/platform/cmd/internal"
+	"github.com/yeremiaaryo/platform/cmd/web"
 )
 
 func main() {
-	server := web.New(&web.Options{ListenAddress: ":3000"})
+	dbConf := database.DBConfig{
+		MasterDSN:     "root:test1234@tcp(localhost:3306)/platform?parseTime=true&loc=Local",
+		SlaveDSN:      "root:test1234@tcp(localhost:3306)/platform?parseTime=true&loc=Local",
+		MaxConn:       100,
+		MaxIdleConn:   10,
+		RetryInterval: 5,
+	}
+	db := database.New(dbConf, database.DriverMySQL)
+	usecase := internal.GetUsecase(db)
+
+	server := web.New(&web.Options{ListenAddress: ":3000", Usecase: usecase})
 	go server.Run()
 
 	select {

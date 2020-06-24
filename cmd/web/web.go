@@ -4,8 +4,11 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"platform/cmd/web/api"
 	"time"
+
+	"github.com/yeremiaaryo/platform/cmd/internal"
+
+	"github.com/yeremiaaryo/platform/cmd/web/api"
 
 	"github.com/yeremiaaryo/go-pkg/router"
 	"gopkg.in/tylerb/graceful.v1"
@@ -13,6 +16,7 @@ import (
 
 type Options struct {
 	ListenAddress string
+	Usecase       *internal.Usecase
 }
 
 type Handler struct {
@@ -26,6 +30,7 @@ func New(o *Options) *Handler {
 	api.New(&api.Options{
 		Prefix:         "/api/v1",
 		DefaultTimeout: 15,
+		Usecase:        o.Usecase,
 	}).Register()
 
 	return handler
