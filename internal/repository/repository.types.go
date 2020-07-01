@@ -7,6 +7,6 @@ import (
 )
 
 type UserRepository interface {
-	FetchUserDataByUserID(ctx context.Context, userID int64) (*entity.UserInfo, error)
+	FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error)
 	RegisterUser(ctx context.Context, user entity.UserInfo) error
 }

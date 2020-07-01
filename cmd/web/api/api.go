@@ -26,6 +26,5 @@ func New(o *Options) *API {
 
 func (a *API) Register() {
 	r := router.New(&router.Options{Prefix: a.options.Prefix, Timeout: a.options.DefaultTimeout})
-	r.GET("/hello", a.GetUserName)
-	r.POST("/register", a.GetUserName)
+	r.POST("/register", a.RegisterUser)
 }

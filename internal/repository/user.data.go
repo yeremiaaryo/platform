@@ -2,15 +2,22 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
-const fetchUser = `SELECT id, name FROM user WHERE id = ?`
+const fetchUser = `SELECT id, password, name FROM user WHERE email = ?`
 
-func (ur *userRepo) FetchUserDataByUserID(ctx context.Context, userID int64) (*entity.UserInfo, error) {
+func (ur *userRepo) FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error) {
 	resp := new(entity.UserInfo)
-	err := ur.db.GetSlave().GetContext(ctx, resp, fetchUser, userID)
+	err := ur.db.GetSlave().GetContext(ctx, resp, fetchUser, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
 	return resp, err
 }
 
