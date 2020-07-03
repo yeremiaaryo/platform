@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"regexp"
 
@@ -38,29 +39,27 @@ func (us *userSvc) RegisterUser(ctx context.Context, user entity.UserInfo) error
 		return err
 	}
 
-	const CONFIG_SMTP_HOST = "smtp.gmail.com"
-	const CONFIG_SMTP_PORT = 587
-	const CONFIG_EMAIL = "cobayeremia@gmail.com"
-	const CONFIG_PASSWORD = "$Tokopedia789"
+	message := fmt.Sprintf(`Hello, %s! <b>Welcome to HobbyLobby</b>`, user.Name)
 	mailer := gomail.NewMessage()
-	mailer.SetHeader("From", CONFIG_EMAIL)
-	mailer.SetHeader("To", "yeremia.aryo@gmail.com")
-	mailer.SetHeader("Subject", "Test mail")
-	mailer.SetBody("text/html", "Hello, <b>have a nice day</b>")
+	mailer.SetHeader("From", entity.ConfigEmail)
+	mailer.SetHeader("To", user.Email)
+	mailer.SetHeader("Subject", "Welcome to HobbyLobby")
+	mailer.SetBody("text/html", message)
 
 	dialer := gomail.NewDialer(
-		CONFIG_SMTP_HOST,
-		CONFIG_SMTP_PORT,
-		CONFIG_EMAIL,
-		CONFIG_PASSWORD,
+		entity.ConfigSMTPHost,
+		entity.ConfigSMTPPort,
+		entity.ConfigEmail,
+		entity.ConfigPassword,
 	)
 
-	err = dialer.DialAndSend(mailer)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	log.Println("Mail sent!")
+	go func(mailer *gomail.Message) {
+		err := dialer.DialAndSend(mailer)
+		if err != nil {
+			log.Println("Error sending email")
+		}
+		log.Println(("Email is sent"))
+	}(mailer)
 	return nil
 }
 
