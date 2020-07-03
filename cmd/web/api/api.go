@@ -27,4 +27,5 @@ func New(o *Options) *API {
 func (a *API) Register() {
 	r := router.New(&router.Options{Prefix: a.options.Prefix, Timeout: a.options.DefaultTimeout})
 	r.POST("/register", a.RegisterUser)
+	r.POST("/login", a.ValidateUser)
 }

@@ -8,4 +8,5 @@ import (
 
 type UserUsecase interface {
 	RegisterUser(ctx context.Context, user entity.UserInfo) error
+	ValidateLogin(ctx context.Context, user entity.UserInfo) error
 }

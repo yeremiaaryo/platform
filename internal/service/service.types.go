@@ -8,4 +8,5 @@ import (
 
 type UserService interface {
 	RegisterUser(ctx context.Context, user entity.UserInfo) error
+	ValidateLogin(ctx context.Context, data entity.UserInfo) error
 }
