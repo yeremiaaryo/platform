@@ -8,6 +8,7 @@ import (
 type userSvc struct {
 	userRepo    repository.UserRepository
 	hashManager HashManager
+	cacheRepo   repository.CacheRepository
 }
 
 type HashManager interface {
@@ -15,9 +16,10 @@ type HashManager interface {
 	ComparedPassword(hashedPassword, pwd []byte) bool
 }
 
-func NewUserService(userRepo repository.UserRepository, crypto crypto.HashManager) *userSvc {
+func NewUserService(userRepo repository.UserRepository, crypto crypto.HashManager, cacheRepo repository.CacheRepository) *userSvc {
 	return &userSvc{
 		userRepo:    userRepo,
 		hashManager: crypto,
+		cacheRepo:   cacheRepo,
 	}
 }

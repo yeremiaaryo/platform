@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -29,12 +30,18 @@ func (us *userSvc) ValidateLogin(ctx context.Context, data entity.UserInfo) erro
 	uuid := uuid.New()
 
 	c := &http.Cookie{}
-	c.Name = "_SID_HobbyLobby_"
+	c.Name = entity.CookieName
 	c.Value = uuid.String()
-	c.Expires = time.Now().Add(5 * time.Minute)
+	c.Expires = time.Now().AddDate(0, 0, entity.CookieExpireInDays)
 
 	w := router.GetResponseWriter(ctx)
 	http.SetCookie(w, c)
+
+	loginKey := fmt.Sprintf(entity.RedisKeyLogin, user.ID)
+	err = us.cacheRepo.Set(loginKey, c.Value, entity.LoginExpireInSeconds)
+	if err != nil {
+		return errors.New("Error setting on Redis")
+	}
 
 	return nil
 }

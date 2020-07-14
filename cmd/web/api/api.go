@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/yeremiaaryo/go-pkg/router"
 	"github.com/yeremiaaryo/platform/cmd/internal"
+	"github.com/yeremiaaryo/platform/internal/auth"
 	"github.com/yeremiaaryo/platform/internal/usecase"
 )
 
@@ -15,12 +16,14 @@ type Options struct {
 type API struct {
 	options *Options
 	userUC  usecase.UserUsecase
+	authUC  auth.AuthUsecase
 }
 
 func New(o *Options) *API {
 	return &API{
 		options: o,
 		userUC:  o.Usecase.User,
+		authUC:  o.Usecase.Auth,
 	}
 }
 

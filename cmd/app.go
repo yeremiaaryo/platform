@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gomodule/redigo/redis"
 	"github.com/yeremiaaryo/go-pkg/database"
 	"github.com/yeremiaaryo/platform/cmd/internal"
 	"github.com/yeremiaaryo/platform/cmd/web"
@@ -20,7 +21,11 @@ func main() {
 		RetryInterval: 5,
 	}
 	db := database.New(dbConf, database.DriverMySQL)
-	usecase := internal.GetUsecase(db)
+	cache, err := redis.Dial("tcp", "localhost:6379")
+	if err != nil {
+		log.Fatal("cannot connect to redis:", err.Error())
+	}
+	usecase := internal.GetUsecase(db, cache)
 
 	server := web.New(&web.Options{ListenAddress: ":3000", Usecase: usecase})
 	go server.Run()

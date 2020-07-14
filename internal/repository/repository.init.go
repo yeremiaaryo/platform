@@ -11,3 +11,13 @@ func NewUserRepo(db *database.Store) *userRepo {
 		db: db,
 	}
 }
+
+type cacheRepo struct {
+	cache RedisConn
+}
+
+func NewCacheRepo(cache RedisConn) *cacheRepo {
+	return &cacheRepo{
+		cache: cache,
+	}
+}
