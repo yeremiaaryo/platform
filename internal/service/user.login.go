@@ -66,5 +66,26 @@ func (us *userSvc) ValidateCookies(ctx context.Context, cookie string) (int64, e
 		return 0, errors.New("Invalid User ID from Redis")
 	}
 
+	err = us.cacheRepo.Del(loginKey)
+	if err != nil {
+		return 0, errors.New("Error deleting old cookie from Redis")
+	}
+
+	uuid := uuid.New()
+	c := &http.Cookie{}
+	c.Name = entity.CookieName
+	c.Value = uuid.String()
+	c.Expires = time.Now().AddDate(0, 0, entity.CookieExpireInDays)
+
+	w := router.GetResponseWriter(ctx)
+	http.SetCookie(w, c)
+
+	newLoginKey := fmt.Sprintf(entity.RedisKeyLogin, c.Value)
+	loginValue := fmt.Sprintf("%v~%v", strconv.FormatInt(userID, 10), detailList[1])
+	err = us.cacheRepo.Set(newLoginKey, loginValue, entity.LoginExpireInSeconds)
+	if err != nil {
+		return 0, errors.New("Error setting KV to Redis")
+	}
+
 	return userID, nil
 }

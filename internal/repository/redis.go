@@ -30,3 +30,8 @@ func (cr *cacheRepo) Set(key, value string, expired int) error {
 	_, err := cr.cache.Do("SETEX", key, expired, value)
 	return err
 }
+
+func (cr *cacheRepo) Del(key string) error {
+	_, err := cr.cache.Do("DEL", key)
+	return err
+}

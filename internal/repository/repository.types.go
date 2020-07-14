@@ -14,4 +14,5 @@ type UserRepository interface {
 type CacheRepository interface {
 	Get(key string) (string, error)
 	Set(key, value string, expired int) error
+	Del(key string) error
 }
