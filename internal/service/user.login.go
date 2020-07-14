@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -37,11 +39,32 @@ func (us *userSvc) ValidateLogin(ctx context.Context, data entity.UserInfo) erro
 	w := router.GetResponseWriter(ctx)
 	http.SetCookie(w, c)
 
-	loginKey := fmt.Sprintf(entity.RedisKeyLogin, user.ID)
-	err = us.cacheRepo.Set(loginKey, c.Value, entity.LoginExpireInSeconds)
+	loginKey := fmt.Sprintf(entity.RedisKeyLogin, c.Value)
+	loginValue := fmt.Sprintf("%v~%v", strconv.FormatInt(user.ID, 10), data.Email)
+	err = us.cacheRepo.Set(loginKey, loginValue, entity.LoginExpireInSeconds)
 	if err != nil {
-		return errors.New("Error setting on Redis")
+		return errors.New("Error setting KV to Redis")
 	}
 
 	return nil
+}
+
+func (us *userSvc) ValidateCookies(ctx context.Context, cookie string) (int64, error) {
+	loginKey := fmt.Sprintf(entity.RedisKeyLogin, cookie)
+	details, err := us.cacheRepo.Get(loginKey)
+	if err != nil {
+		return 0, errors.New("Error getting data from Redis")
+	}
+
+	detailList := strings.Split(details, "~")
+	if len(detailList) < 2 {
+		return 0, errors.New("Invalid value, please login again")
+	}
+
+	userID, err := strconv.ParseInt(detailList[0], 10, 64)
+	if err != nil {
+		return 0, errors.New("Invalid User ID from Redis")
+	}
+
+	return userID, nil
 }

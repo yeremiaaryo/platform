@@ -24,7 +24,7 @@ func (a *API) RegisterUser(r *http.Request) *response.JSONResponse {
 	return response.NewJSONResponse()
 }
 
-func (a *API) ValidateUser(r *http.Request) *response.JSONResponse {
+func (a *API) ValidateLogin(r *http.Request) *response.JSONResponse {
 	ctx := r.Context()
 
 	user := entity.UserInfo{}
@@ -38,5 +38,9 @@ func (a *API) ValidateUser(r *http.Request) *response.JSONResponse {
 		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
 
+	return response.NewJSONResponse()
+}
+
+func (a *API) ValidateCookie(r *http.Request) *response.JSONResponse {
 	return response.NewJSONResponse()
 }

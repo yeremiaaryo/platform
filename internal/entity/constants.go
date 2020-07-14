@@ -19,3 +19,7 @@ const (
 	CookieExpireInDays   = 30
 	LoginExpireInSeconds = CookieExpireInDays * 24 * 60 * 60
 )
+
+const (
+	ContextUserID = `UserID`
+)
