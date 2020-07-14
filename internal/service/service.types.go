@@ -1,7 +1,13 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"github.com/yeremiaaryo/platform/internal/entity"
+)
 
 type UserService interface {
-	GetUserName(ctx context.Context, userID int64) (string, error)
+	RegisterUser(ctx context.Context, user entity.UserInfo) error
+	ValidateLogin(ctx context.Context, data entity.UserInfo) error
+	ValidateCookies(ctx context.Context, cookie string) (int64, error)
 }

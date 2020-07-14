@@ -1,23 +1,46 @@
 package api
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/yeremiaaryo/go-pkg/response"
+	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
-func (a *API) GetUserName(r *http.Request) *response.JSONResponse {
+func (a *API) RegisterUser(r *http.Request) *response.JSONResponse {
 	ctx := r.Context()
-	userID, err := strconv.ParseInt(r.URL.Query().Get("user_id"), 10, 64)
+
+	user := entity.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		return response.NewJSONResponse().SetError(response.ErrBadRequest)
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
 
-	name, err := a.userUC.GetUserName(ctx, userID)
+	err = a.userUC.RegisterUser(ctx, user)
 	if err != nil {
-		return response.NewJSONResponse().SetError(response.ErrInternalServerError).SetMessage(err.Error())
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
-	return response.NewJSONResponse().SetData(fmt.Sprintf("Hello, %s", name))
+	return response.NewJSONResponse()
+}
+
+func (a *API) ValidateLogin(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	user := entity.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	err = a.userUC.ValidateLogin(ctx, user)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	return response.NewJSONResponse()
+}
+
+func (a *API) ValidateCookie(r *http.Request) *response.JSONResponse {
+	return response.NewJSONResponse()
 }

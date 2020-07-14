@@ -1,7 +1,15 @@
 package usecase
 
-import "context"
+import (
+	"context"
 
-func (uu *userUC) GetUserName(ctx context.Context, userID int64) (string, error) {
-	return uu.userSvc.GetUserName(ctx, userID)
+	"github.com/yeremiaaryo/platform/internal/entity"
+)
+
+func (uu *userUC) RegisterUser(ctx context.Context, user entity.UserInfo) error {
+	return uu.userSvc.RegisterUser(ctx, user)
+}
+
+func (uu *userUC) ValidateLogin(ctx context.Context, user entity.UserInfo) error {
+	return uu.userSvc.ValidateLogin(ctx, user)
 }
