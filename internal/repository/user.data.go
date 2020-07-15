@@ -7,7 +7,7 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
-const fetchUser = `SELECT id, password, name FROM user WHERE email = ?`
+const fetchUser = `SELECT id, password, name, email FROM user WHERE email = ?`
 
 func (ur *userRepo) FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error) {
 	resp := new(entity.UserInfo)

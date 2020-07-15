@@ -49,26 +49,37 @@ func (us *userSvc) ValidateLogin(ctx context.Context, data entity.UserInfo) erro
 	return nil
 }
 
-func (us *userSvc) ValidateCookies(ctx context.Context, cookie string) (int64, error) {
+func (us *userSvc) ValidateCookies(ctx context.Context, cookie string) (int64, string, error) {
 	loginKey := fmt.Sprintf(entity.RedisKeyLogin, cookie)
 	details, err := us.cacheRepo.Get(loginKey)
 	if err != nil {
-		return 0, errors.New("Error getting data from Redis")
+		return 0, "", errors.New("Error getting data from Redis")
 	}
 
 	detailList := strings.Split(details, "~")
 	if len(detailList) < 2 {
-		return 0, errors.New("Invalid value, please login again")
+		return 0, "", errors.New("Invalid value, please login again")
 	}
 
 	userID, err := strconv.ParseInt(detailList[0], 10, 64)
 	if err != nil {
-		return 0, errors.New("Invalid User ID from Redis")
+		return 0, "", errors.New("Invalid User ID from Redis")
+	}
+
+	return userID, detailList[1], nil
+}
+
+func (us *userSvc) RefreshCookie(ctx context.Context, cookie string) error {
+	loginKey := fmt.Sprintf(entity.RedisKeyLogin, cookie)
+
+	userID, email, err := us.ValidateCookies(ctx, cookie)
+	if err != nil {
+		return err
 	}
 
 	err = us.cacheRepo.Del(loginKey)
 	if err != nil {
-		return 0, errors.New("Error deleting old cookie from Redis")
+		return errors.New("Error deleting old cookie from Redis")
 	}
 
 	uuid := uuid.New()
@@ -81,11 +92,10 @@ func (us *userSvc) ValidateCookies(ctx context.Context, cookie string) (int64, e
 	http.SetCookie(w, c)
 
 	newLoginKey := fmt.Sprintf(entity.RedisKeyLogin, c.Value)
-	loginValue := fmt.Sprintf("%v~%v", strconv.FormatInt(userID, 10), detailList[1])
+	loginValue := fmt.Sprintf("%v~%v", strconv.FormatInt(userID, 10), email)
 	err = us.cacheRepo.Set(newLoginKey, loginValue, entity.LoginExpireInSeconds)
 	if err != nil {
-		return 0, errors.New("Error setting KV to Redis")
+		return errors.New("Error setting KV to Redis")
 	}
-
-	return userID, nil
+	return nil
 }
