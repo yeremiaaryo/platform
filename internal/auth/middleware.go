@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/yeremiaaryo/go-pkg/response"
@@ -43,7 +42,6 @@ func GetUserDetailFromContext(ctx context.Context) (int64, string) {
 		return 0, ""
 	}
 	email := e.(string)
-	fmt.Println("EMAIL CONTEXT", email)
 
 	return userID, email
 }

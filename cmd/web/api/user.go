@@ -66,3 +66,32 @@ func (a *API) GenerateForgotPasswordToken(r *http.Request) *response.JSONRespons
 	}
 	return response.NewJSONResponse()
 }
+
+func (a *API) ValidateForgotPasswordToken(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	_, email := auth.GetUserDetailFromContext(ctx)
+	otpValue := r.Header.Get("OTP-Val")
+	correct, err := a.userUC.ValidateForgotPasswordToken(ctx, email, otpValue)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse().SetData(correct)
+}
+
+func (a *API) ResetPassword(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	data := entity.ResetPassword{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	_, email := auth.GetUserDetailFromContext(ctx)
+	err = a.userUC.ResetPassword(ctx, data, email)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse()
+}

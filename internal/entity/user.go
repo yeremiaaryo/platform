@@ -15,3 +15,8 @@ type UserInfo struct {
 	PhoneNumber string `db:"phone_number"`
 	Avatar      string `db:"avatar"`
 }
+
+type ResetPassword struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}

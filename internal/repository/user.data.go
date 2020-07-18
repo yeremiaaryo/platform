@@ -27,3 +27,10 @@ func (ur *userRepo) RegisterUser(ctx context.Context, user entity.UserInfo) erro
 	_, err := ur.db.GetMaster().ExecContext(ctx, registerUser, user.Email, user.Password, user.Name)
 	return err
 }
+
+const updatePassword = `UPDATE user SET password = ? WHERE email = ?`
+
+func (ur *userRepo) ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error {
+	_, err := ur.db.GetMaster().ExecContext(ctx, updatePassword, data.NewPassword, email)
+	return err
+}

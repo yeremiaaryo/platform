@@ -12,4 +12,6 @@ type UserService interface {
 	ValidateCookies(ctx context.Context, cookie string) (int64, string, error)
 	RefreshCookie(ctx context.Context, cookie string) error
 	GenerateForgotPasswordToken(ctx context.Context, email string) error
+	ValidateForgotPasswordToken(ctx context.Context, email, token string) (bool, error)
+	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 }

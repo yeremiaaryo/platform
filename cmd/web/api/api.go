@@ -32,5 +32,7 @@ func (a *API) Register() {
 	r.POST("/register", a.RegisterUser)
 	r.POST("/login", a.ValidateLogin)
 	r.POST("/refresh", a.authUC.Authorize(a.ValidateCookie))
-	r.POST("/forgot-password/token", a.authUC.Authorize(a.GenerateForgotPasswordToken))
+	r.POST("/forgot-password/generate-token", a.authUC.Authorize(a.GenerateForgotPasswordToken))
+	r.POST("/forgot-password/validate-token", a.authUC.Authorize(a.ValidateForgotPasswordToken))
+	r.POST("/forgot-password/reset", a.authUC.Authorize(a.ResetPassword))
 }

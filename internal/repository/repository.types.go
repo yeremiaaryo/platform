@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error)
 	RegisterUser(ctx context.Context, user entity.UserInfo) error
+	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 }
 
 type CacheRepository interface {
