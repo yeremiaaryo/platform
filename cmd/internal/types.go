@@ -8,4 +8,5 @@ import (
 type Usecase struct {
 	User usecase.UserUsecase
 	Auth auth.AuthUsecase
+	Shop usecase.ShopUsecase
 }

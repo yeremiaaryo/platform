@@ -17,3 +17,6 @@ type CacheRepository interface {
 	Set(key, value string, expired int) error
 	Del(key string) error
 }
+
+type ShopRepository interface {
+}

@@ -21,3 +21,13 @@ func NewCacheRepo(cache RedisConn) *cacheRepo {
 		cache: cache,
 	}
 }
+
+type shopRepo struct {
+	db *database.Store
+}
+
+func NewShopRepo(db *database.Store) *shopRepo {
+	return &shopRepo{
+		db: db,
+	}
+}
