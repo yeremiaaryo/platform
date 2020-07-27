@@ -16,4 +16,5 @@ type UserUsecase interface {
 }
 
 type ShopUsecase interface {
+	GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfo, error)
 }
