@@ -56,7 +56,8 @@ func (us *userSvc) RegisterUser(ctx context.Context, user entity.UserInfo) error
 	go func(mailer *gomail.Message) {
 		err := dialer.DialAndSend(mailer)
 		if err != nil {
-			log.Println("Error sending email")
+			log.Println("Error sending email", err.Error())
+			return
 		}
 		log.Println(("Email is sent"))
 	}(mailer)

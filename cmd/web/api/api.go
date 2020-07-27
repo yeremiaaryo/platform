@@ -17,6 +17,7 @@ type API struct {
 	options *Options
 	userUC  usecase.UserUsecase
 	authUC  auth.AuthUsecase
+	shopUC  usecase.ShopUsecase
 }
 
 func New(o *Options) *API {
@@ -24,6 +25,7 @@ func New(o *Options) *API {
 		options: o,
 		userUC:  o.Usecase.User,
 		authUC:  o.Usecase.Auth,
+		shopUC:  o.Usecase.Shop,
 	}
 }
 
@@ -35,4 +37,6 @@ func (a *API) Register() {
 	r.POST("/forgot-password/generate-token", a.authUC.Authorize(a.GenerateForgotPasswordToken))
 	r.POST("/forgot-password/validate-token", a.authUC.Authorize(a.ValidateForgotPasswordToken))
 	r.POST("/forgot-password/reset", a.authUC.Authorize(a.ResetPassword))
+
+	r.GET("/shop/info", a.authUC.Authorize(a.GetShopInfo))
 }

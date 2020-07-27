@@ -14,3 +14,7 @@ type UserUsecase interface {
 	ValidateForgotPasswordToken(ctx context.Context, email, token string) (bool, error)
 	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 }
+
+type ShopUsecase interface {
+	GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfo, error)
+}

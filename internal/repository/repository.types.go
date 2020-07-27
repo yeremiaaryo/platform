@@ -17,3 +17,7 @@ type CacheRepository interface {
 	Set(key, value string, expired int) error
 	Del(key string) error
 }
+
+type ShopRepository interface {
+	GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfoDB, error)
+}

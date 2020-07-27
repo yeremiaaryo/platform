@@ -13,3 +13,13 @@ func NewUserUsecase(userSvc service.UserService) *userUC {
 		userSvc: userSvc,
 	}
 }
+
+type shopUC struct {
+	shopSvc service.ShopService
+}
+
+func NewShopUsecase(shopSvc service.ShopService) *shopUC {
+	return &shopUC{
+		shopSvc: shopSvc,
+	}
+}
