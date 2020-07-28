@@ -38,3 +38,10 @@ func (ur *userRepo) ResetPassword(ctx context.Context, data entity.ResetPassword
 	_, err := ur.db.GetMaster().ExecContext(ctx, updatePassword, data.NewPassword, email)
 	return err
 }
+
+const updateVerified = `UPDATE user SET is_verified = ? WHERE id = ?`
+
+func (ur *userRepo) UpdateVerifiedUser(ctx context.Context, userID int64) error {
+	_, err := ur.db.GetMaster().ExecContext(ctx, updateVerified, entity.UserVerified, userID)
+	return err
+}

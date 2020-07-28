@@ -29,3 +29,7 @@ func (uu *userUC) ValidateForgotPasswordToken(ctx context.Context, email, token 
 func (uu *userUC) ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error {
 	return uu.userSvc.ResetPassword(ctx, data, email)
 }
+
+func (uu *userUC) ValidateVerifyToken(ctx context.Context, jwtToken string) error {
+	return uu.userSvc.ValidateVerifyToken(ctx, jwtToken)
+}

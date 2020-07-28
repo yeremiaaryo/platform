@@ -95,3 +95,14 @@ func (a *API) ResetPassword(r *http.Request) *response.JSONResponse {
 	}
 	return response.NewJSONResponse()
 }
+
+func (a *API) VerifyEmail(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	token := r.URL.Query().Get("token")
+	err := a.userUC.ValidateVerifyToken(ctx, token)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse()
+}

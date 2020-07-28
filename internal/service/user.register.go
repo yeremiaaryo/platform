@@ -96,6 +96,36 @@ func (us *userSvc) GenerateJWTToken(ctx context.Context, userID int64) (*entity.
 	return userToken, nil
 }
 
+func (us *userSvc) ValidateVerifyToken(ctx context.Context, jwtToken string) error {
+	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+		//Make sure that the token method conform to "SigningMethodHMAC"
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(entity.JWTSecret), nil
+	})
+	if err != nil {
+		return err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return errors.New("Invalid JWT Token")
+	}
+
+	userID, err := strconv.ParseInt(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	err = us.userRepo.UpdateVerifiedUser(ctx, userID)
+	if err != nil {
+		log.Println("Error update user to verified")
+		return err
+	}
+	return nil
+}
+
 func validateUserRegistration(inp entity.UserInfo) error {
 	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !emailRegex.MatchString(inp.Email) {

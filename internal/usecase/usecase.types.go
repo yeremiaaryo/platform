@@ -13,6 +13,7 @@ type UserUsecase interface {
 	GenerateForgotPasswordToken(ctx context.Context, email string) error
 	ValidateForgotPasswordToken(ctx context.Context, email, token string) (bool, error)
 	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
+	ValidateVerifyToken(ctx context.Context, jwtToken string) error
 }
 
 type ShopUsecase interface {
