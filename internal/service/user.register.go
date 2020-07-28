@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/yeremiaaryo/platform/internal/entity"
 	"gopkg.in/gomail.v2"
 )
@@ -33,13 +36,20 @@ func (us *userSvc) RegisterUser(ctx context.Context, user entity.UserInfo) error
 	}
 
 	user.Password = hashedPwd
-	err = us.userRepo.RegisterUser(ctx, user)
+	userID, err := us.userRepo.RegisterUser(ctx, user)
 	if err != nil {
 		log.Println("Error when register user", err.Error())
 		return err
 	}
 
-	message := fmt.Sprintf(`Hello, %s! <b>Welcome to HobbyLobby</b>`, user.Name)
+	token, err := us.GenerateJWTToken(ctx, userID)
+	if err != nil {
+		log.Println("Error when create JWT Token:", err.Error())
+		return err
+	}
+
+	link := fmt.Sprintf("http://localhost:3000/api/v1/verify_account?token=%s", token.AccessToken)
+	message := fmt.Sprintf(registerEmail, user.Name, link)
 	mailer := gomail.NewMessage()
 	mailer.SetHeader("From", entity.ConfigEmail)
 	mailer.SetHeader("To", user.Email)
@@ -62,6 +72,28 @@ func (us *userSvc) RegisterUser(ctx context.Context, user entity.UserInfo) error
 		log.Println(("Email is sent"))
 	}(mailer)
 	return nil
+}
+
+func (us *userSvc) GenerateJWTToken(ctx context.Context, userID int64) (*entity.UserToken, error) {
+	userToken := &entity.UserToken{}
+	userToken.ExpiredAt = time.Now().Add(time.Hour * 1).Unix()
+
+	var err error
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userID
+	atClaims["exp"] = userToken.ExpiredAt
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	userToken.AccessToken, err = at.SignedString([]byte(entity.JWTSecret))
+	if err != nil {
+		log.Println("Error creating token:", err.Error())
+		return nil, err
+	}
+
+	verifyKey := fmt.Sprintf(entity.RedisKeyVerifyEmail, userID)
+	go us.cacheRepo.Set(verifyKey, strconv.FormatInt(userToken.ExpiredAt, 10), entity.VerifyEmailExpiredInSeconds)
+
+	return userToken, nil
 }
 
 func validateUserRegistration(inp entity.UserInfo) error {

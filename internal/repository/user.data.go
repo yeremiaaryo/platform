@@ -23,9 +23,13 @@ func (ur *userRepo) FetchUserDataByEmail(ctx context.Context, email string) (*en
 
 const registerUser = `INSERT INTO user (email, password, name) VALUES (?, ?, ?)`
 
-func (ur *userRepo) RegisterUser(ctx context.Context, user entity.UserInfo) error {
-	_, err := ur.db.GetMaster().ExecContext(ctx, registerUser, user.Email, user.Password, user.Name)
-	return err
+func (ur *userRepo) RegisterUser(ctx context.Context, user entity.UserInfo) (int64, error) {
+	result, err := ur.db.GetMaster().ExecContext(ctx, registerUser, user.Email, user.Password, user.Name)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.LastInsertId()
 }
 
 const updatePassword = `UPDATE user SET password = ? WHERE email = ?`

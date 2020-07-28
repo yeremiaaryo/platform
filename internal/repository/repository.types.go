@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface {
 	FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error)
-	RegisterUser(ctx context.Context, user entity.UserInfo) error
+	RegisterUser(ctx context.Context, user entity.UserInfo) (int64, error)
 	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 }
 
