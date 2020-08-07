@@ -14,12 +14,14 @@ const (
 const (
 	RedisKeyLogin               = `Login_%v`
 	RedisKeyForgotPasswordToken = `FP_%v`
+	RedisKeyVerifyEmail         = `Verify_%v`
 )
 
 const (
-	CookieExpireInDays   = 30
-	LoginExpireInSeconds = CookieExpireInDays * 24 * 60 * 60
-	OTPExpiredInSeconds  = 3 * 60 * 60
+	CookieExpireInDays          = 30
+	LoginExpireInSeconds        = CookieExpireInDays * 24 * 60 * 60
+	OTPExpiredInSeconds         = 3 * 60 * 60
+	VerifyEmailExpiredInSeconds = 3600
 
 	OTPLength = 6
 )
@@ -27,4 +29,8 @@ const (
 const (
 	ContextUserID = `UserID`
 	ContextEmail  = `Email`
+)
+
+const (
+	JWTSecret = "cuvoqhztptiz"
 )
