@@ -15,6 +15,8 @@ type UserService interface {
 	ValidateForgotPasswordToken(ctx context.Context, email, token string) (bool, error)
 	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 	ValidateVerifyToken(ctx context.Context, jwtToken string) error
+	IsVerified(ctx context.Context, email string) (bool, error)
+	ResendVerifyEmail(ctx context.Context, userID int64, email string) error
 }
 
 type ShopService interface {

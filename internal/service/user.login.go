@@ -99,3 +99,16 @@ func (us *userSvc) RefreshCookie(ctx context.Context, cookie string) error {
 	}
 	return nil
 }
+
+func (us *userSvc) IsVerified(ctx context.Context, email string) (bool, error) {
+	user, err := us.userRepo.FetchUserDataByEmail(ctx, email)
+	if err != nil {
+		return false, err
+	}
+
+	if user == nil {
+		return false, errors.New("Email not registered")
+	}
+
+	return user.IsVerified == entity.UserVerified, nil
+}

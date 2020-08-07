@@ -17,6 +17,8 @@ type CacheRepository interface {
 	Get(key string) (string, error)
 	Set(key, value string, expired int) error
 	Del(key string) error
+	TTL(key string) (int64, error)
+	GetInt64(key string) (int64, error)
 }
 
 type ShopRepository interface {

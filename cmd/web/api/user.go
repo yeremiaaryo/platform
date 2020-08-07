@@ -106,3 +106,25 @@ func (a *API) VerifyEmail(r *http.Request) *response.JSONResponse {
 	}
 	return response.NewJSONResponse()
 }
+
+func (a *API) IsVerified(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	_, email := auth.GetUserDetailFromContext(ctx)
+	isVerified, err := a.userUC.IsVerified(ctx, email)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse().SetData(isVerified)
+}
+
+func (a *API) ResendVerification(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	userID, email := auth.GetUserDetailFromContext(ctx)
+	err := a.userUC.ResendVerificationEmail(ctx, userID, email)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse()
+}

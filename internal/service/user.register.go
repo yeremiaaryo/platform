@@ -126,6 +126,71 @@ func (us *userSvc) ValidateVerifyToken(ctx context.Context, jwtToken string) err
 	return nil
 }
 
+func (us *userSvc) ResendVerifyEmail(ctx context.Context, userID int64, email string) error {
+	user, err := us.userRepo.FetchUserDataByEmail(ctx, email)
+	if err != nil {
+		return err
+	}
+
+	if user.IsVerified == entity.UserVerified {
+		return errors.New("Already verified")
+	}
+
+	verifyKey := fmt.Sprintf(entity.RedisKeyVerifyEmail, userID)
+	expiredAt, err := us.cacheRepo.GetInt64(verifyKey)
+	if err != nil {
+		return err
+	}
+
+	expirationTime := time.Unix(expiredAt, 0)
+	if expirationTime.After(time.Now()) {
+		log.Println("Cannot resend verification until: ", expirationTime)
+		errMsg := fmt.Sprintf("Please wait until %v", expirationTime)
+		return errors.New(errMsg)
+	}
+
+	userToken := &entity.UserToken{}
+	userToken.ExpiredAt = time.Now().Add(time.Hour * 1).Unix()
+
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userID
+	atClaims["exp"] = userToken.ExpiredAt
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	userToken.AccessToken, err = at.SignedString([]byte(entity.JWTSecret))
+	if err != nil {
+		log.Println("Error creating token:", err.Error())
+		return err
+	}
+
+	go us.cacheRepo.Set(verifyKey, strconv.FormatInt(userToken.ExpiredAt, 10), entity.VerifyEmailExpiredInSeconds)
+
+	link := fmt.Sprintf("http://localhost:3000/api/v1/verify_account?token=%s", userToken.AccessToken)
+	message := fmt.Sprintf(registerEmail, user.Name, link)
+	mailer := gomail.NewMessage()
+	mailer.SetHeader("From", entity.ConfigEmail)
+	mailer.SetHeader("To", user.Email)
+	mailer.SetHeader("Subject", "Welcome to HobbyLobby")
+	mailer.SetBody("text/html", message)
+
+	dialer := gomail.NewDialer(
+		entity.ConfigSMTPHost,
+		entity.ConfigSMTPPort,
+		entity.ConfigEmail,
+		entity.ConfigPassword,
+	)
+
+	go func(mailer *gomail.Message) {
+		err := dialer.DialAndSend(mailer)
+		if err != nil {
+			log.Println("Error sending email", err.Error())
+			return
+		}
+		log.Println(("Email is sent"))
+	}(mailer)
+	return nil
+}
+
 func validateUserRegistration(inp entity.UserInfo) error {
 	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !emailRegex.MatchString(inp.Email) {
