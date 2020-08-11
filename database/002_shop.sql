@@ -1,10 +1,13 @@
 CREATE TABLE `platform`.`shop` (
-  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` BIGINT(20) UNSIGNED NOT NULL,
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT(20) NOT NULL,
   `shop_name` VARCHAR(50) NOT NULL,
-  `shop_avatar` VARCHAR(255) NULL,
+  `shop_banner` VARCHAR(255) NULL,
   `description` LONGTEXT NULL,
-  `tagline` VARCHAR(50) NULL,
+  `current_occupation` VARCHAR(255) NULL,
+  `skills` JSON NULL,
+  `personal_website` VARCHAR(255) NULL,
+  `instagram_url` VARCHAR(255) NULL,
   `category` VARCHAR(50) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` VARCHAR(50) NOT NULL DEFAULT 'SYSTEM',
@@ -12,10 +15,4 @@ CREATE TABLE `platform`.`shop` (
   `updated_by` VARCHAR(50) NOT NULL DEFAULT 'SYSTEM',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC) VISIBLE,
-  UNIQUE INDEX `shop_name_UNIQUE` (`shop_name` ASC) VISIBLE,
-  INDEX `category_INDEX` (`category` ASC) VISIBLE,
-  CONSTRAINT `user_id_FK`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `platform`.`user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  UNIQUE INDEX `shop_name_UNIQUE` (`shop_name` ASC) VISIBLE);

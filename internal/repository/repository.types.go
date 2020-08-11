@@ -23,4 +23,6 @@ type CacheRepository interface {
 
 type ShopRepository interface {
 	GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfoDB, error)
+	InsertShopData(ctx context.Context, data *entity.ShopInfoRequest) error
+	UpdateShopData(ctx context.Context, data *entity.ShopInfoRequest) error
 }

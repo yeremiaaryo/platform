@@ -42,4 +42,5 @@ func (a *API) Register() {
 	r.POST("/resend_verification", a.authUC.Authorize(a.ResendVerification))
 
 	r.GET("/shop/info", a.authUC.Authorize(a.GetShopInfo))
+	r.POST("/shop/update", a.authUC.Authorize(a.InsertUpdateShopData))
 }
