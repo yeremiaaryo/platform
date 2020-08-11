@@ -9,3 +9,7 @@ import (
 func (su *shopUC) GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfo, error) {
 	return su.shopSvc.GetShopInfoByUserID(ctx, userID)
 }
+
+func (su *shopUC) InsertUpdateShopData(ctx context.Context, data *entity.ShopInfoRequest) error {
+	return su.shopSvc.InsertUpdateShopData(ctx, data)
+}
