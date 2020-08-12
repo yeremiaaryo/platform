@@ -2,7 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
 
 	"github.com/yeremiaaryo/go-pkg/response"
 	"github.com/yeremiaaryo/platform/internal/auth"
@@ -36,4 +39,30 @@ func (a *API) InsertUpdateShopData(r *http.Request) *response.JSONResponse {
 		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
 	return response.NewJSONResponse()
+}
+
+func (a *API) UploadImage(r *http.Request) *response.JSONResponse {
+	const fiveMB = 5 << 20
+	ctx := r.Context()
+
+	r.Body = http.MaxBytesReader(httptest.NewRecorder(), r.Body, fiveMB)
+	if err := r.ParseMultipartForm(fiveMB); err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	img, err := ioutil.ReadAll(io.LimitReader(file, fiveMB))
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	result, err := a.shopUC.UploadImage(ctx, img)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse().SetData(result)
 }

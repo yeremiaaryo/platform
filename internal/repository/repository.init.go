@@ -1,6 +1,11 @@
 package repository
 
-import "github.com/yeremiaaryo/go-pkg/database"
+import (
+	"net/http"
+	"time"
+
+	"github.com/yeremiaaryo/go-pkg/database"
+)
 
 type userRepo struct {
 	db *database.Store
@@ -29,5 +34,17 @@ type shopRepo struct {
 func NewShopRepo(db *database.Store) *shopRepo {
 	return &shopRepo{
 		db: db,
+	}
+}
+
+type cloudinaryRepo struct {
+	client *http.Client
+}
+
+func NewCloudinaryRepo() *cloudinaryRepo {
+	return &cloudinaryRepo{
+		client: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}
 }
