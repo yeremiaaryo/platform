@@ -22,4 +22,5 @@ type UserService interface {
 type ShopService interface {
 	GetShopInfoByUserID(ctx context.Context, userID int64) (*entity.ShopInfo, error)
 	InsertUpdateShopData(ctx context.Context, data *entity.ShopInfoRequest) error
+	UploadImage(ctx context.Context, image []byte) (*entity.UploadImageResponse, error)
 }

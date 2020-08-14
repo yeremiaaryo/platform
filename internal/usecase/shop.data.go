@@ -13,3 +13,7 @@ func (su *shopUC) GetShopInfoByUserID(ctx context.Context, userID int64) (*entit
 func (su *shopUC) InsertUpdateShopData(ctx context.Context, data *entity.ShopInfoRequest) error {
 	return su.shopSvc.InsertUpdateShopData(ctx, data)
 }
+
+func (su *shopUC) UploadImage(ctx context.Context, image []byte) (*entity.UploadImageResponse, error) {
+	return su.shopSvc.UploadImage(ctx, image)
+}

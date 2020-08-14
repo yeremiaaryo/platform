@@ -6,7 +6,6 @@ const (
 	ConfigEmail    = "cobayeremia@gmail.com"
 	ConfigPassword = "$Tokopedia789"
 )
-
 const (
 	CookieName = `_SID_HobbyLobby_`
 )
@@ -33,4 +32,10 @@ const (
 
 const (
 	JWTSecret = "cuvoqhztptiz"
+)
+
+const (
+	CloudinaryBaseURL   = "https://api.cloudinary.com/v1_1/hobbylobby/image/upload"
+	CloudinaryAPIKey    = "882192587435456"
+	CloudinaryAPISecret = "EDl6YxD2EM5RDKuJQkpA86_TsBM"
 )

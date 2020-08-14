@@ -26,3 +26,7 @@ type ShopRepository interface {
 	InsertShopData(ctx context.Context, data *entity.ShopInfoRequest) error
 	UpdateShopData(ctx context.Context, data *entity.ShopInfoRequest) error
 }
+
+type CloudinaryRepository interface {
+	UploadImage(ctx context.Context, image string) (*entity.UploadImageResponse, error)
+}
