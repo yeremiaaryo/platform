@@ -14,6 +14,6 @@ func (su *shopUC) InsertUpdateShopData(ctx context.Context, data *entity.ShopInf
 	return su.shopSvc.InsertUpdateShopData(ctx, data)
 }
 
-func (su *shopUC) UploadImage(ctx context.Context, image []byte) (interface{}, error) {
+func (su *shopUC) UploadImage(ctx context.Context, image []byte) (*entity.UploadImageResponse, error) {
 	return su.shopSvc.UploadImage(ctx, image)
 }

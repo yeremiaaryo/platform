@@ -28,5 +28,5 @@ type ShopRepository interface {
 }
 
 type CloudinaryRepository interface {
-	UploadImage(ctx context.Context, image string) (interface{}, error)
+	UploadImage(ctx context.Context, image string) (*entity.UploadImageResponse, error)
 }
