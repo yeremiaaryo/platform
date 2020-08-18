@@ -25,15 +25,17 @@ func NewUserService(userRepo repository.UserRepository, crypto crypto.HashManage
 }
 
 type shopSvc struct {
-	userRepo       repository.UserRepository
-	shopRepo       repository.ShopRepository
-	cloudinaryRepo repository.CloudinaryRepository
+	userRepo        repository.UserRepository
+	shopRepo        repository.ShopRepository
+	cloudinaryRepo  repository.CloudinaryRepository
+	inspirationRepo repository.InspirationRepository
 }
 
-func NewShopService(userRepo repository.UserRepository, shopRepo repository.ShopRepository, cloudinaryRepo repository.CloudinaryRepository) *shopSvc {
+func NewShopService(userRepo repository.UserRepository, shopRepo repository.ShopRepository, cloudinaryRepo repository.CloudinaryRepository, inspirationRepo repository.InspirationRepository) *shopSvc {
 	return &shopSvc{
-		userRepo:       userRepo,
-		shopRepo:       shopRepo,
-		cloudinaryRepo: cloudinaryRepo,
+		userRepo:        userRepo,
+		shopRepo:        shopRepo,
+		cloudinaryRepo:  cloudinaryRepo,
+		inspirationRepo: inspirationRepo,
 	}
 }

@@ -48,3 +48,13 @@ func NewCloudinaryRepo() *cloudinaryRepo {
 		},
 	}
 }
+
+type inspirationRepo struct {
+	db *database.Store
+}
+
+func NewInspirationRepo(db *database.Store) *inspirationRepo {
+	return &inspirationRepo{
+		db: db,
+	}
+}

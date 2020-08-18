@@ -17,3 +17,7 @@ func (su *shopUC) InsertUpdateShopData(ctx context.Context, data *entity.ShopInf
 func (su *shopUC) UploadImage(ctx context.Context, image []byte) (*entity.UploadImageResponse, error) {
 	return su.shopSvc.UploadImage(ctx, image)
 }
+
+func (su *shopUC) GetInspirationList(ctx context.Context, userID int64) ([]entity.InspirationList, error) {
+	return su.shopSvc.GetInspirationList(ctx, userID)
+}
