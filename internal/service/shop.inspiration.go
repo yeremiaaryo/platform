@@ -12,7 +12,7 @@ import (
 func (ss *shopSvc) GetInspirationList(ctx context.Context, userID int64) ([]entity.InspirationList, error) {
 	shop, err := ss.shopRepo.GetShopInfoByUserID(ctx, userID)
 	if err != nil {
-		log.Println("[GetInspirationList] Error when get shop info")
+		log.Println("[GetInspirationList] Error when get shop info", err.Error())
 		return nil, err
 	}
 
@@ -22,7 +22,7 @@ func (ss *shopSvc) GetInspirationList(ctx context.Context, userID int64) ([]enti
 
 	listDB, err := ss.inspirationRepo.GetInspirationListByShopID(ctx, shop.ID)
 	if err != nil {
-		log.Println("[GetInspirationList] Error when get inspiration list")
+		log.Println("[GetInspirationList] Error when get inspiration list", err.Error())
 		return nil, err
 	}
 	return buildInspirationList(listDB), nil

@@ -21,3 +21,10 @@ type InspirationList struct {
 	ImageURL    []string `db:"image_url"`
 	CatalogID   int64    `db:"catalog_id"`
 }
+
+type InspirationStatus int
+
+const (
+	InspirationInactive InspirationStatus = iota
+	InspirationActive
+)
