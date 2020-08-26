@@ -28,9 +28,10 @@ type ShopRepository interface {
 }
 
 type CloudinaryRepository interface {
-	UploadImage(ctx context.Context, image string) (*entity.UploadImageResponse, error)
+	UploadImage(ctx context.Context, image, folder string) (*entity.UploadImageResponse, error)
 }
 
 type InspirationRepository interface {
 	GetInspirationListByShopID(ctx context.Context, shopID int64) ([]entity.InspirationListDB, error)
+	InsertInspiration(ctx context.Context, data entity.InspirationListDB) error
 }

@@ -8,9 +8,9 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
-func (ss *shopSvc) UploadImage(ctx context.Context, image []byte) (*entity.UploadImageResponse, error) {
+func (ss *shopSvc) UploadImage(ctx context.Context, image []byte, folder string) (*entity.UploadImageResponse, error) {
 	base64Img := base64.StdEncoding.EncodeToString(image)
-	resp, err := ss.cloudinaryRepo.UploadImage(ctx, base64Img)
+	resp, err := ss.cloudinaryRepo.UploadImage(ctx, base64Img, folder)
 	if err != nil {
 		log.Println("error when upload image to cloudinary", err.Error())
 		return nil, err

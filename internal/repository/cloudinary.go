@@ -14,9 +14,9 @@ import (
 	"github.com/yeremiaaryo/platform/internal/utils"
 )
 
-func (cr *cloudinaryRepo) UploadImage(ctx context.Context, image string) (*entity.UploadImageResponse, error) {
+func (cr *cloudinaryRepo) UploadImage(ctx context.Context, image, folder string) (*entity.UploadImageResponse, error) {
 	ts := time.Now().Unix()
-	stringToSign := fmt.Sprintf("timestamp=%v%s", ts, entity.CloudinaryAPISecret)
+	stringToSign := fmt.Sprintf("folder=%s&timestamp=%v%s", folder, ts, entity.CloudinaryAPISecret)
 	signature := utils.GenerateSHA1(stringToSign)
 
 	image = "data:image/png;base64," + image
@@ -24,7 +24,7 @@ func (cr *cloudinaryRepo) UploadImage(ctx context.Context, image string) (*entit
 	params.Add("file", image)
 	fileParams := params.Encode()
 
-	bodyData := fmt.Sprintf("%s&api_key=%s&timestamp=%v&signature=%s", fileParams, entity.CloudinaryAPIKey, ts, signature)
+	bodyData := fmt.Sprintf("%s&folder=%s&api_key=%s&timestamp=%v&signature=%s", fileParams, folder, entity.CloudinaryAPIKey, ts, signature)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, entity.CloudinaryBaseURL, bytes.NewBufferString(bodyData))
 	if err != nil {

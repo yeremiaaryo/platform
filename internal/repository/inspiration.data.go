@@ -7,7 +7,7 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
-const getInspirationList = `SELECT id, title, tags, category, description, image_url, catalog_id FROM inspiration WHERE shop_id = ? AND status = ?`
+const getInspirationList = `SELECT id, shop_id, title, tags, category, description, image_url, catalog_id FROM inspiration WHERE shop_id = ? AND status = ?`
 
 func (ir *inspirationRepo) GetInspirationListByShopID(ctx context.Context, shopID int64) ([]entity.InspirationListDB, error) {
 	resp := []entity.InspirationListDB{}
@@ -19,4 +19,11 @@ func (ir *inspirationRepo) GetInspirationListByShopID(ctx context.Context, shopI
 		return nil, err
 	}
 	return resp, err
+}
+
+const insertInspiration = `INSERT INTO inspiration (shop_id, title, tags, category, description, image_url, catalog_id) VALUES (?, ?, ?, ?, ?, ?, ?)`
+
+func (ir *inspirationRepo) InsertInspiration(ctx context.Context, data entity.InspirationListDB) error {
+	_, err := ir.db.GetSlave().ExecContext(ctx, insertInspiration, data.ShopID, data.Title, data.Tags, data.Category, data.Description, data.ImageURL, data.CatalogID)
+	return err
 }
