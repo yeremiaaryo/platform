@@ -18,17 +18,21 @@ func GetUsecase(db *database.Store, cache repository.RedisConn) *Usecase {
 	shopRepo := repository.NewShopRepo(db)
 	cloudinaryRepo := repository.NewCloudinaryRepo()
 	inspirationRepo := repository.NewInspirationRepo(db)
+	chatRepo := repository.NewChatRepo(db)
 
 	userSvc := service.NewUserService(userRepo, hashManager, cacheRepo)
 	shopSvc := service.NewShopService(userRepo, shopRepo, cloudinaryRepo, inspirationRepo)
+	chatSvc := service.NewChatService(chatRepo)
 
 	userUC := usecase.NewUserUsecase(userSvc)
 	authUC := auth.NewAuthUsecase(userSvc)
 	shopUC := usecase.NewShopUsecase(shopSvc)
+	chatUC := usecase.NewChatUsecase(chatSvc)
 
 	return &Usecase{
 		User: userUC,
 		Auth: authUC,
 		Shop: shopUC,
+		Chat: chatUC,
 	}
 }

@@ -23,3 +23,13 @@ func NewShopUsecase(shopSvc service.ShopService) *shopUC {
 		shopSvc: shopSvc,
 	}
 }
+
+type chatUC struct {
+	chatSvc service.ChatService
+}
+
+func NewChatUsecase(chatSvc service.ChatService) *chatUC {
+	return &chatUC{
+		chatSvc: chatSvc,
+	}
+}

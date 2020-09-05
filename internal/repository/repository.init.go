@@ -58,3 +58,13 @@ func NewInspirationRepo(db *database.Store) *inspirationRepo {
 		db: db,
 	}
 }
+
+type chatRepo struct {
+	db *database.Store
+}
+
+func NewChatRepo(db *database.Store) *chatRepo {
+	return &chatRepo{
+		db: db,
+	}
+}
