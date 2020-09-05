@@ -43,3 +43,11 @@ func (cr *chatRepo) InsertOrderChatHistory(ctx context.Context, data entity.Orde
 	_, err := cr.db.GetMaster().ExecContext(ctx, insertOrderChatHistory, data.OrderChatID, data.Content, data.UserID, data.UserID, data.UserID)
 	return err
 }
+
+const getOrderChatList = `SELECT content, origin FROM order_chat_history WHERE order_chat_id = ? ORDER BY id ASC`
+
+func (cr *chatRepo) GetOrderChatList(ctx context.Context, orderChatID int64) ([]entity.OrderChatHistoryList, error) {
+	resp := []entity.OrderChatHistoryList{}
+	err := cr.db.GetSlave().SelectContext(ctx, &resp, getOrderChatList, orderChatID)
+	return resp, err
+}

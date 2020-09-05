@@ -12,6 +12,7 @@ type OrderChat struct {
 	InvoiceNo string     `db:"invoice_no"`
 	Status    ChatStatus `db:"status"`
 }
+
 type OrderChatHistory struct {
 	OrderChatID int64
 	Content     string
@@ -21,4 +22,9 @@ type OrderChatHistory struct {
 type OrderChatRequest struct {
 	InvoiceNo string `json:"invoice_no"`
 	Content   string `json:"content"`
+}
+
+type OrderChatHistoryList struct {
+	Content string `db:"content" json:"content"`
+	User    int64  `db:"origin" json:"user_id_origin"`
 }

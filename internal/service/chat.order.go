@@ -45,3 +45,23 @@ func (cs *chatSvc) InsertChatOrder(ctx context.Context, data entity.OrderChatReq
 	}
 	return err
 }
+
+func (cs *chatSvc) GetOrderChatHistoryList(ctx context.Context, invoiceNo string) ([]entity.OrderChatHistoryList, error) {
+	orderChat, err := cs.chatRepo.GetOrderChat(ctx, invoiceNo)
+	if err != nil {
+		log.Println("[chatSvc][GetOrderChatHistoryList] Error on getting order chat", err.Error())
+		return nil, err
+	}
+
+	if orderChat == nil {
+		return nil, nil
+	}
+
+	list, err := cs.chatRepo.GetOrderChatList(ctx, orderChat.ID)
+	if err != nil {
+		log.Println("[chatSvc][GetOrderChatHistoryList] Error on getting order chat list", err.Error())
+		return nil, err
+	}
+
+	return list, nil
+}

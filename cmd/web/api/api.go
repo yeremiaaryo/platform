@@ -51,4 +51,5 @@ func (a *API) Register() {
 	r.POST("/inspiration/insert", a.authUC.Authorize(a.InsertInspiration))
 
 	r.POST("/chat/order", a.authUC.Authorize(a.InsertOrderData))
+	r.GET("/chat/order-list", a.authUC.Authorize(a.GetChatOrderList))
 }

@@ -40,4 +40,5 @@ type ChatRepository interface {
 	GetOrderChat(ctx context.Context, invoiceNo string) (*entity.OrderChat, error)
 	InsertOrderChat(ctx context.Context, invoiceNo string, userID int64) (int64, error)
 	InsertOrderChatHistory(ctx context.Context, data entity.OrderChatHistory) error
+	GetOrderChatList(ctx context.Context, orderChatID int64) ([]entity.OrderChatHistoryList, error)
 }

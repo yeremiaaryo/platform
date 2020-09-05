@@ -29,4 +29,5 @@ type ShopService interface {
 
 type ChatService interface {
 	InsertChatOrder(ctx context.Context, data entity.OrderChatRequest, userID int64) error
+	GetOrderChatHistoryList(ctx context.Context, invoiceNo string) ([]entity.OrderChatHistoryList, error)
 }
