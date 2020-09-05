@@ -9,7 +9,7 @@ const (
 
 type OrderChat struct {
 	ID        int64      `db:"id"`
-	InvoiceNo int64      `db:"invoice_no"`
+	InvoiceNo string     `db:"invoice_no"`
 	Status    ChatStatus `db:"status"`
 }
 type OrderChatHistory struct {

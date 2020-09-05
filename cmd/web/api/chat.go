@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/yeremiaaryo/go-pkg/response"
 	"github.com/yeremiaaryo/platform/internal/auth"
 	"github.com/yeremiaaryo/platform/internal/entity"
-	"github.com/yeremiaaryo/platform/vendor/github.com/yeremiaaryo/go-pkg/response"
 )
 
 func (a *API) InsertOrderData(r *http.Request) *response.JSONResponse {
