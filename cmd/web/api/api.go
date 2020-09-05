@@ -44,4 +44,7 @@ func (a *API) Register() {
 	r.GET("/shop/info", a.authUC.Authorize(a.GetShopInfo))
 	r.POST("/shop/update", a.authUC.Authorize(a.InsertUpdateShopData))
 	r.POST("/shop/upload", a.authUC.Authorize(a.UploadImage))
+
+	r.GET("/inspiration/list", a.authUC.Authorize(a.GetInspirationList))
+	r.POST("/inspiration/insert", a.authUC.Authorize(a.InsertInspiration))
 }

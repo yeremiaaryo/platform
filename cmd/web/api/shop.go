@@ -60,9 +60,38 @@ func (a *API) UploadImage(r *http.Request) *response.JSONResponse {
 		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
 
-	result, err := a.shopUC.UploadImage(ctx, img)
+	folder := r.FormValue("type")
+	result, err := a.shopUC.UploadImage(ctx, img, folder)
 	if err != nil {
 		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
 	}
 	return response.NewJSONResponse().SetData(result)
+}
+
+func (a *API) GetInspirationList(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	userID, _ := auth.GetUserDetailFromContext(ctx)
+	inspiration, err := a.shopUC.GetInspirationList(ctx, userID)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse().SetData(inspiration)
+}
+
+func (a *API) InsertInspiration(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	data := entity.InspirationList{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	userID, _ := auth.GetUserDetailFromContext(ctx)
+	err = a.shopUC.InsertInspiration(ctx, data, userID)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse()
 }
