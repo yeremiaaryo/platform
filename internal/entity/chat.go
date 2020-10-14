@@ -24,7 +24,17 @@ type OrderChatRequest struct {
 	Content   string `json:"content"`
 }
 
+type ChatType int
+
+const (
+	ChatTypeNormal ChatType = iota
+	ChatTypeImage
+	ChatTypeCatalog
+)
+
 type OrderChatHistoryList struct {
-	Content string `db:"content" json:"content"`
-	User    int64  `db:"origin" json:"user_id_origin"`
+	ContentDB []byte      `db:"content" json:"-"`
+	Content   interface{} `json:"content"`
+	User      int64       `db:"origin" json:"user_id_origin"`
+	ChatType  ChatType    `db:"chat_type" json:"chat_type"`
 }
