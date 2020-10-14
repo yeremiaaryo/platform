@@ -17,6 +17,7 @@ type UserService interface {
 	ValidateVerifyToken(ctx context.Context, jwtToken string) error
 	IsVerified(ctx context.Context, email string) (bool, error)
 	ResendVerifyEmail(ctx context.Context, userID int64, email string) error
+	RegisterWaitinglist(ctx context.Context, email string) error
 }
 
 type ShopService interface {

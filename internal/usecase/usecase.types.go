@@ -16,6 +16,7 @@ type UserUsecase interface {
 	ValidateVerifyToken(ctx context.Context, jwtToken string) error
 	IsVerified(ctx context.Context, email string) (bool, error)
 	ResendVerificationEmail(ctx context.Context, userID int64, email string) error
+	RegisterWaitinglist(ctx context.Context, email string) error
 }
 
 type ShopUsecase interface {

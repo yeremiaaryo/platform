@@ -14,6 +14,32 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
+func (us *userSvc) RegisterWaitinglist(ctx context.Context, email string) error {
+	err := validateEmail(email)
+	if err != nil {
+		return err
+	}
+
+	count, err := us.userRepo.FetchWaitinglist(ctx, email)
+	if err != nil {
+		log.Println("Error when fetch waitinglist, err: ", err.Error())
+		return err
+	}
+
+	if count > 0 {
+		log.Printf("User: %s already registered", email)
+		return nil
+	}
+
+	err = us.userRepo.RegisterWaitinglist(ctx, email)
+	if err != nil {
+		log.Println("Error when register waitinglist, err: ", err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (us *userSvc) RegisterUser(ctx context.Context, user entity.UserInfo) error {
 	err := validateUserRegistration(user)
 	if err != nil {
@@ -192,12 +218,20 @@ func (us *userSvc) ResendVerifyEmail(ctx context.Context, userID int64, email st
 }
 
 func validateUserRegistration(inp entity.UserInfo) error {
-	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !emailRegex.MatchString(inp.Email) {
 		return errors.New("Email not valid")
 	}
 	if len(inp.Password) < 8 {
 		return errors.New("Password must contain at least 8 characters")
+	}
+	return nil
+}
+
+func validateEmail(email string) error {
+	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if !emailRegex.MatchString(email) {
+		return errors.New("Email not valid")
 	}
 	return nil
 }

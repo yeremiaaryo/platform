@@ -6,6 +6,10 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
+func (uu *userUC) RegisterWaitinglist(ctx context.Context, email string) error {
+	return uu.userSvc.RegisterWaitinglist(ctx, email)
+}
+
 func (uu *userUC) RegisterUser(ctx context.Context, user entity.UserInfo) error {
 	return uu.userSvc.RegisterUser(ctx, user)
 }

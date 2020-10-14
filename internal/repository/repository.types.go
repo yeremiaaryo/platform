@@ -11,6 +11,8 @@ type UserRepository interface {
 	RegisterUser(ctx context.Context, user entity.UserInfo) (int64, error)
 	ResetPassword(ctx context.Context, data entity.ResetPassword, email string) error
 	UpdateVerifiedUser(ctx context.Context, userID int64) error
+	FetchWaitinglist(ctx context.Context, email string) (int64, error)
+	RegisterWaitinglist(ctx context.Context, email string) error
 }
 
 type CacheRepository interface {
