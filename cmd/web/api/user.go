@@ -9,6 +9,22 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
+func (a *API) RegisterWaitingList(r *http.Request) *response.JSONResponse {
+	ctx := r.Context()
+
+	user := entity.UserInfo{}
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+
+	err = a.userUC.RegisterWaitinglist(ctx, user.Email)
+	if err != nil {
+		return response.NewJSONResponse().SetError(response.ErrBadRequest).SetMessage(err.Error())
+	}
+	return response.NewJSONResponse()
+}
+
 func (a *API) RegisterUser(r *http.Request) *response.JSONResponse {
 	ctx := r.Context()
 

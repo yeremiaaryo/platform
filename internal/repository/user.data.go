@@ -7,6 +7,27 @@ import (
 	"github.com/yeremiaaryo/platform/internal/entity"
 )
 
+const fetchWaitinglist = `SELECT COUNT(1) FROM waitinglist WHERE email = ?`
+
+func (ur *userRepo) FetchWaitinglist(ctx context.Context, email string) (int64, error) {
+	resp := int64(0)
+	err := ur.db.GetSlave().GetContext(ctx, resp, fetchWaitinglist, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+		return 0, err
+	}
+	return resp, err
+}
+
+const registerWaitinglist = `INSERT INTO waitinglist (email) VALUES (?)`
+
+func (ur *userRepo) RegisterWaitinglist(ctx context.Context, email string) error {
+	_, err := ur.db.GetMaster().ExecContext(ctx, registerWaitinglist, email)
+	return err
+}
+
 const fetchUser = `SELECT id, password, name, email, is_verified FROM user WHERE email = ?`
 
 func (ur *userRepo) FetchUserDataByEmail(ctx context.Context, email string) (*entity.UserInfo, error) {
