@@ -26,3 +26,8 @@ type ShopService interface {
 	GetInspirationList(ctx context.Context, userID int64) ([]entity.InspirationList, error)
 	InsertInspiration(ctx context.Context, data entity.InspirationList, userID int64) error
 }
+
+type ChatService interface {
+	InsertChatOrder(ctx context.Context, data entity.OrderChatRequest, userID int64) error
+	GetOrderChatHistoryList(ctx context.Context, invoiceNo string) ([]entity.OrderChatHistoryList, error)
+}

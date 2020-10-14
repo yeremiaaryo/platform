@@ -39,3 +39,13 @@ func NewShopService(userRepo repository.UserRepository, shopRepo repository.Shop
 		inspirationRepo: inspirationRepo,
 	}
 }
+
+type chatSvc struct {
+	chatRepo repository.ChatRepository
+}
+
+func NewChatService(chatRepo repository.ChatRepository) *chatSvc {
+	return &chatSvc{
+		chatRepo: chatRepo,
+	}
+}

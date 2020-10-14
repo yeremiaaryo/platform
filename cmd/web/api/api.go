@@ -18,6 +18,7 @@ type API struct {
 	userUC  usecase.UserUsecase
 	authUC  auth.AuthUsecase
 	shopUC  usecase.ShopUsecase
+	chatUC  usecase.ChatUsecase
 }
 
 func New(o *Options) *API {
@@ -26,6 +27,7 @@ func New(o *Options) *API {
 		userUC:  o.Usecase.User,
 		authUC:  o.Usecase.Auth,
 		shopUC:  o.Usecase.Shop,
+		chatUC:  o.Usecase.Chat,
 	}
 }
 
@@ -47,4 +49,7 @@ func (a *API) Register() {
 
 	r.GET("/inspiration/list", a.authUC.Authorize(a.GetInspirationList))
 	r.POST("/inspiration/insert", a.authUC.Authorize(a.InsertInspiration))
+
+	r.POST("/chat/order", a.authUC.Authorize(a.InsertOrderData))
+	r.GET("/chat/order-list", a.authUC.Authorize(a.GetChatOrderList))
 }
